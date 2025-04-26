@@ -1,16 +1,20 @@
-// /components/Question.jsx
 "use client";
+
+import styles from "./Question.module.css"; // CSSモジュール読み込み
 
 export default function Question({ questionData, onAnswer, answered }) {
   return (
     <div>
-      <h2>{questionData.question}</h2>
+      {/* 問題文 */}
+      <h2 className={styles.questionTitle}>{questionData.question}</h2>
+
+      {/* 選択肢リスト */}
       {questionData.options.map((option, index) => (
-        <div key={index} style={{ margin: "10px" }}>
+        <div key={index} className={styles.optionWrapper}>
           <button
             onClick={() => onAnswer(index)}
             disabled={answered}
-            style={{ padding: "10px 20px", fontSize: "16px" }}
+            className={styles.optionButton}
           >
             {option}
           </button>
