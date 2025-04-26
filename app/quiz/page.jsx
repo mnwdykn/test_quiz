@@ -24,16 +24,26 @@ export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [answerResult, setAnswerResult] = useState(null);
+  const [answered, setAnswered] = useState(false); // 回答済みフラグ
 
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleAnswer = (index) => {
     if (index === currentQuestion.answerIndex) {
       setScore(score + 1);
+      setAnswerResult("正解！");
+    } else {
+      setAnswerResult("不正解！");
     }
+    setAnswered(true); // 回答したら「次へ」ボタンを出す
+  };
 
+  const handleNext = () => {
     if (currentQuestionIndex + 1 < questions.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setAnswerResult(null);
+      setAnswered(false);
     } else {
       setShowResult(true);
     }
@@ -48,13 +58,31 @@ export default function QuizPage() {
           {currentQuestion.options.map((option, index) => (
             <div key={index} style={{ margin: "10px" }}>
               <button
-                style={{ padding: "10px 20px", fontSize: "16px" }}
                 onClick={() => handleAnswer(index)}
+                disabled={answered} // すでに回答したらボタン無効
+                style={{ padding: "10px 20px", fontSize: "16px" }}
               >
                 {option}
               </button>
             </div>
           ))}
+
+          {answerResult && (
+            <div style={{ marginTop: "20px", fontSize: "24px" }}>
+              {answerResult}
+            </div>
+          )}
+
+          {answered && (
+            <div style={{ marginTop: "30px" }}>
+              <button
+                onClick={handleNext}
+                style={{ padding: "10px 20px", fontSize: "16px" }}
+              >
+                次の問題へ
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <div>
