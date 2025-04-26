@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Question from "../../components/Question";
 import questions from "../../data/questions";
 
@@ -85,6 +86,11 @@ export default function QuizPage() {
             >
               もう一度挑戦する
             </button>
+            <Link href="/">
+              <button style={{ padding: "10px 20px", fontSize: "16px" }}>
+                ホームに戻る
+              </button>
+            </Link>
           </div>
         </div>
       )}
