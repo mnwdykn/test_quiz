@@ -1,25 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Question from "../../components/Question"; // 追加
-
-const questions = [
-  {
-    question: "Linuxで現在のディレクトリを表示するコマンドは？",
-    options: ["ls", "pwd", "cd", "mkdir"],
-    answerIndex: 1,
-  },
-  {
-    question: "Linuxでファイルの内容を表示するコマンドは？",
-    options: ["cat", "touch", "rm", "cp"],
-    answerIndex: 0,
-  },
-  {
-    question: "ディレクトリを作成するLinuxコマンドは？",
-    options: ["mkdir", "rmdir", "cd", "ls"],
-    answerIndex: 0,
-  },
-];
+import Question from "../../components/Question";
+import questions from "../../data/questions";
 
 export default function QuizPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
