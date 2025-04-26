@@ -1,0 +1,17 @@
+/* 問題文の見出し */
+.questionTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* 各選択肢ボタンの外側のマージン */
+.optionWrapper {
+  margin: 10px;
+}
+
+/* 選択肢ボタン自体のスタイル */
+.optionButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}

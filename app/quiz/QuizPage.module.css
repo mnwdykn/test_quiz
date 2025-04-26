@@ -1,0 +1,43 @@
+/* クイズページ全体の中央寄せ＆マージン設定 */
+.quizContainer {
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* 問題番号表示（例: 第1問） */
+.questionNumber {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+/* 正解・不正解メッセージ */
+.answerResult {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* 「次の問題へ」ボタンや「もう一度挑戦する」ボタン */
+.buttonContainer {
+  margin-top: 30px;
+}
+
+/* ボタンの基本スタイル */
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+/* クイズ終了後のスコア表示 */
+.scoreText {
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+/* ローディング中テキスト */
+.loading {
+  font-size: 20px;
+  margin-top: 100px;
+}

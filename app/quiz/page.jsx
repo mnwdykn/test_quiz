@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Question from "../../components/Question";
 import questions from "../../data/questions";
+import styles from "./QuizPage.module.css"; // CSSモジュールをインポート
 
 // シャッフルして5問だけ選ぶ関数
 const shuffleAndPick = (array, count) => {
@@ -23,12 +24,14 @@ export default function QuizPage() {
     setSelectedQuestions(shuffleAndPick(questions, 5));
   }, []);
 
+  // ローディング中の表示
   if (selectedQuestions.length === 0) {
-    return <div>読み込み中...</div>;
+    return <div className={styles.loading}>読み込み中...</div>;
   }
 
   const currentQuestion = selectedQuestions[currentQuestionIndex];
 
+  // 選択肢を選んだ時の処理
   const handleAnswer = (index) => {
     if (index === currentQuestion.answerIndex) {
       setScore(score + 1);
@@ -39,6 +42,7 @@ export default function QuizPage() {
     setAnswered(true);
   };
 
+  // 「次の問題へ」ボタンを押した時の処理
   const handleNext = () => {
     if (currentQuestionIndex + 1 < selectedQuestions.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -49,6 +53,7 @@ export default function QuizPage() {
     }
   };
 
+  // 「もう一度挑戦する」ボタンを押した時の処理
   const handleRetry = () => {
     setSelectedQuestions(shuffleAndPick(questions, 5)); // 再シャッフル！
     setCurrentQuestionIndex(0);
@@ -59,28 +64,30 @@ export default function QuizPage() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className={styles.quizContainer}>
       {!showResult ? (
         <>
-          <h1>クイズに挑戦！</h1>
+          {/* 問題番号表示 */}
+          <h1 className={styles.questionNumber}>
+            第{currentQuestionIndex + 1}問
+          </h1>
+
+          {/* クイズ問題の表示 */}
           <Question
             questionData={currentQuestion}
             onAnswer={handleAnswer}
             answered={answered}
           />
 
+          {/* 正解・不正解メッセージ */}
           {answerResult && (
-            <div style={{ marginTop: "20px", fontSize: "24px" }}>
-              {answerResult}
-            </div>
+            <div className={styles.answerResult}>{answerResult}</div>
           )}
 
+          {/* 「次の問題へ」ボタン */}
           {answered && (
-            <div style={{ marginTop: "30px" }}>
-              <button
-                onClick={handleNext}
-                style={{ padding: "10px 20px", fontSize: "16px" }}
-              >
+            <div className={styles.buttonContainer}>
+              <button onClick={handleNext} className={styles.button}>
                 次の問題へ
               </button>
             </div>
@@ -88,21 +95,19 @@ export default function QuizPage() {
         </>
       ) : (
         <div>
+          {/* クイズ終了画面 */}
           <h1>クイズ終了！</h1>
-          <h2>
+          <h2 className={styles.scoreText}>
             あなたのスコアは {score} / {selectedQuestions.length} です。
           </h2>
-          <div style={{ marginTop: "30px" }}>
-            <button
-              onClick={handleRetry}
-              style={{ padding: "10px 20px", fontSize: "16px" }}
-            >
+
+          {/* 「もう一度挑戦する」「ホームに戻る」ボタン */}
+          <div className={styles.buttonContainer}>
+            <button onClick={handleRetry} className={styles.button}>
               もう一度挑戦する
             </button>
             <Link href="/">
-              <button style={{ padding: "10px 20px", fontSize: "16px" }}>
-                ホームに戻る
-              </button>
+              <button className={styles.button}>ホームに戻る</button>
             </Link>
           </div>
         </div>
