@@ -33,6 +33,15 @@ export default function QuizPage() {
     }
   };
 
+  // 🔥 リトライ用の関数を追加
+  const handleRetry = () => {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setAnswerResult(null);
+    setAnswered(false);
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       {!showResult ? (
@@ -67,6 +76,16 @@ export default function QuizPage() {
           <h2>
             あなたのスコアは {score} / {questions.length} です。
           </h2>
+
+          {/* 🔥 リトライボタンを表示 */}
+          <div style={{ marginTop: "30px" }}>
+            <button
+              onClick={handleRetry}
+              style={{ padding: "10px 20px", fontSize: "16px" }}
+            >
+              もう一度挑戦する
+            </button>
+          </div>
         </div>
       )}
     </div>
