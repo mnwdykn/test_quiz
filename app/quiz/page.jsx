@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Question from "../../components/Question"; // 追加
 
 const questions = [
   {
@@ -25,7 +26,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [answerResult, setAnswerResult] = useState(null);
-  const [answered, setAnswered] = useState(false); // 回答済みフラグ
+  const [answered, setAnswered] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -36,7 +37,7 @@ export default function QuizPage() {
     } else {
       setAnswerResult("不正解！");
     }
-    setAnswered(true); // 回答したら「次へ」ボタンを出す
+    setAnswered(true);
   };
 
   const handleNext = () => {
@@ -54,18 +55,11 @@ export default function QuizPage() {
       {!showResult ? (
         <>
           <h1>クイズに挑戦！</h1>
-          <h2>{currentQuestion.question}</h2>
-          {currentQuestion.options.map((option, index) => (
-            <div key={index} style={{ margin: "10px" }}>
-              <button
-                onClick={() => handleAnswer(index)}
-                disabled={answered} // すでに回答したらボタン無効
-                style={{ padding: "10px 20px", fontSize: "16px" }}
-              >
-                {option}
-              </button>
-            </div>
-          ))}
+          <Question
+            questionData={currentQuestion}
+            onAnswer={handleAnswer}
+            answered={answered}
+          />
 
           {answerResult && (
             <div style={{ marginTop: "20px", fontSize: "24px" }}>
