@@ -1,3 +1,4 @@
+// /app/quiz/page.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,7 +8,7 @@ import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
 import styles from "./QuizPage.module.css";
 
-// 配列をシャッフルして指定数だけ取得する関数
+// 配列をシャッフルしてcount個だけ取得する関数
 const shuffleAndPick = (array, count) => {
   return [...array].sort(() => Math.random() - 0.5).slice(0, count);
 };
@@ -25,7 +26,7 @@ export default function QuizPage() {
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // JSONファイルから問題データをロード
+  // JSONから問題データをロード
   useEffect(() => {
     async function loadQuestions() {
       const res = await fetch("/data/questions.json");
@@ -42,6 +43,7 @@ export default function QuizPage() {
 
   const currentQuestion = selectedQuestions[currentQuestionIndex];
 
+  // 回答を処理
   const handleAnswer = (index) => {
     const correctAnswer = currentQuestion.options[currentQuestion.answerIndex];
     if (index === currentQuestion.answerIndex) {
@@ -53,6 +55,7 @@ export default function QuizPage() {
     setAnswered(true);
   };
 
+  // 次の問題へ
   const handleNext = () => {
     if (currentQuestionIndex + 1 < selectedQuestions.length) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -62,6 +65,7 @@ export default function QuizPage() {
     }
   };
 
+  // もう一度挑戦
   const handleRetry = () => {
     setSelectedQuestions(shuffleAndPick(questionsData, 5));
     setCurrentQuestionIndex(0);
@@ -70,6 +74,7 @@ export default function QuizPage() {
     resetQuestionState();
   };
 
+  // 質問・回答状態をリセット
   const resetQuestionState = () => {
     setAnswerResult(null);
     setAnswered(false);
@@ -78,6 +83,7 @@ export default function QuizPage() {
     setLoadingAi(false);
   };
 
+  // AI追加質問を送信
   const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) return;
     setLoadingAi(true);
@@ -127,6 +133,13 @@ ${userPrompt}
 
   return (
     <div className={styles.quizContainer}>
+      {/* いつでも表示するホームボタン */}
+      <div className={styles.buttonContainer}>
+        <Link href="/">
+          <button className={styles.button}>ホームに戻る</button>
+        </Link>
+      </div>
+
       {!showResult ? (
         <>
           <h1 className={styles.questionNumber}>
