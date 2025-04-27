@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Question from "../../components/Question";
-import AnswerResult from "../../components/AnswerResult"; // 新規追加
-import QuizResult from "../../components/QuizResult"; // 新規追加
+import AnswerResult from "../../components/AnswerResult";
+import QuizResult from "../../components/QuizResult";
 import questions from "../../data/questions";
 import styles from "./QuizPage.module.css";
 
@@ -14,7 +14,6 @@ const shuffleAndPick = (array, count) => {
 };
 
 export default function QuizPage() {
-  // クイズに関する状態管理
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -22,24 +21,20 @@ export default function QuizPage() {
   const [answerResult, setAnswerResult] = useState(null);
   const [answered, setAnswered] = useState(false);
 
-  // 追加質問・AI回答に関する状態管理
   const [userPrompt, setUserPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // 初回マウント時に問題をシャッフルしてセット
   useEffect(() => {
     setSelectedQuestions(shuffleAndPick(questions, 5));
   }, []);
 
-  // 問題ロード中表示
   if (selectedQuestions.length === 0) {
     return <div className={styles.loading}>読み込み中...</div>;
   }
 
   const currentQuestion = selectedQuestions[currentQuestionIndex];
 
-  // 解答ボタン押下時の処理
   const handleAnswer = (index) => {
     const correctAnswer = currentQuestion.options[currentQuestion.answerIndex];
 
@@ -53,7 +48,6 @@ export default function QuizPage() {
     setAnswered(true);
   };
 
-  // 次の問題へ進む処理
   const handleNext = () => {
     if (currentQuestionIndex + 1 < selectedQuestions.length) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -63,7 +57,6 @@ export default function QuizPage() {
     }
   };
 
-  // クイズをリトライする処理
   const handleRetry = () => {
     setSelectedQuestions(shuffleAndPick(questions, 5));
     setCurrentQuestionIndex(0);
@@ -72,7 +65,6 @@ export default function QuizPage() {
     resetQuestionState();
   };
 
-  // 1問ごとの状態リセット処理
   const resetQuestionState = () => {
     setAnswerResult(null);
     setAnswered(false);
@@ -81,7 +73,6 @@ export default function QuizPage() {
     setLoadingAi(false);
   };
 
-  // 追加質問をAIに送信して回答をもらう
   const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) return;
     setLoadingAi(true);
@@ -92,7 +83,13 @@ export default function QuizPage() {
 
       const combinedPrompt = `
 あなたはITの専門家です。
-以下のクイズの問題・選択肢・正解を踏まえて、ユーザーの質問にわかりやすく答えてください。
+以下のクイズ内容とユーザー質問に対して、必ず**Markdown形式**でわかりやすく回答してください。
+
+【Markdown出力ルール】
+- 最初に「# 見出し」を付けてください
+- 要点は「- 箇条書き」で整理してください
+- コマンド例などは「\`\`\`コードブロック\`\`\`」で囲んでください
+- 通常の文章のみは禁止。必ずMarkdown構造で回答してください
 
 【クイズの問題】
 ${currentQuestion.question}
@@ -103,9 +100,9 @@ ${currentQuestion.options.map((opt, idx) => `${idx + 1}. ${opt}`).join("\n")}
 【正解】
 ${correctAnswer}
 
-【ユーザーの質問】
+【ユーザーの追加質問】
 ${userPrompt}
-      `;
+`;
 
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -127,19 +124,16 @@ ${userPrompt}
     <div className={styles.quizContainer}>
       {!showResult ? (
         <>
-          {/* 問題番号表示 */}
           <h1 className={styles.questionNumber}>
             第{currentQuestionIndex + 1}問
           </h1>
 
-          {/* クイズ問題コンポーネント */}
           <Question
             questionData={currentQuestion}
             onAnswer={handleAnswer}
             answered={answered}
           />
 
-          {/* 解答後、結果＆追加質問コンポーネントを表示 */}
           {answerResult && (
             <AnswerResult
               answerResult={answerResult}
@@ -151,7 +145,6 @@ ${userPrompt}
             />
           )}
 
-          {/* 次の問題へ進むボタン */}
           {answered && (
             <div className={styles.buttonContainer}>
               <button onClick={handleNext} className={styles.button}>
@@ -161,7 +154,6 @@ ${userPrompt}
           )}
         </>
       ) : (
-        // クイズ結果画面
         <QuizResult
           score={score}
           totalQuestions={selectedQuestions.length}
