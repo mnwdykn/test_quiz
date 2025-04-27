@@ -5,7 +5,8 @@
 IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。  
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
-データとロジックを分離し、問題データは JSON ファイル(`/public/data/questions.json`)から動的に読み込む形式に移行しました。
+データとロジックを分離し、問題データは JSON ファイル(`/public/data/questions.json`)から動的に読み込む形式に移行しました。  
+さらに、AI 追加質問用のプロンプト生成処理を `utils/generatePrompt.js` に切り出して、保守性を向上させました。
 
 ## ✨ 現在できている機能
 
@@ -21,6 +22,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - 回答中ローディング表示（「回答を取得中...」）
 - クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
 - 問題データを `/public/data/questions.json` から動的に fetch して読み込み
+- AI へのプロンプト生成を `utils/generatePrompt.js` に関数化して分離
 
 ## 🗂️ ディレクトリ構成
 
@@ -46,6 +48,9 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 /public
   └── /data
        └── questions.json（クイズ問題データ）
+
+/utils
+  └── generatePrompt.js（AI用プロンプト生成ユーティリティ）
 ```
 
 ## 🛠️ 使用技術
