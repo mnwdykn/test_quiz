@@ -2,7 +2,7 @@
 
 ## 🚀 プロジェクト概要
 
-IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。
+IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。  
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
 ## ✨ 現在できている機能
@@ -17,22 +17,29 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - 読み込み中は「読み込み中...」メッセージを表示
 - 回答後、「追加質問（AI 回答）」フォームを表示し、ユーザーの自由質問に Gemini API が回答
 - 回答中ローディング表示（「回答を取得中...」）
+- クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
 
 ## 🗂️ ディレクトリ構成
 
 ```
 /app
   ├── HomePage.module.css（ホーム画面用CSS）
-  ├── page.js（ホーム画面）
+  ├── page.jsx（ホーム画面）
   ├── /api
   │     └── /generate
   │         └── route.js（Gemini API連携エンドポイント）
   └── /quiz
         ├── QuizPage.module.css（クイズ画面用CSS）
         └── page.jsx（クイズ画面）
+
 /components
+  ├── Question.jsx（問題文と選択肢表示コンポーネント）
   ├── Question.module.css（Questionコンポーネント用CSS）
-  └── Question.jsx（問題文と選択肢表示コンポーネント）
+  ├── AnswerResult.jsx（正誤結果・追加質問表示コンポーネント）
+  ├── AnswerResult.module.css（AnswerResult用CSS）
+  ├── QuizResult.jsx（クイズ終了後画面コンポーネント）
+  └── QuizResult.module.css（QuizResult用CSS）
+
 /data
   └── questions.js（クイズ問題データ）
 ```

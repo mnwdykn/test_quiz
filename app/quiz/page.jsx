@@ -3,31 +3,36 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Question from "../../components/Question";
+import AnswerResult from "../../components/AnswerResult"; // 新規追加
+import QuizResult from "../../components/QuizResult"; // 新規追加
 import questions from "../../data/questions";
 import styles from "./QuizPage.module.css";
 
-// 配列をシャッフルして指定数だけ取得
+// 配列をシャッフルして指定数だけ取得する関数
 const shuffleAndPick = (array, count) => {
   return [...array].sort(() => Math.random() - 0.5).slice(0, count);
 };
 
 export default function QuizPage() {
+  // クイズに関する状態管理
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [answerResult, setAnswerResult] = useState(null);
   const [answered, setAnswered] = useState(false);
+
+  // 追加質問・AI回答に関する状態管理
   const [userPrompt, setUserPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // 初回マウント時に問題をシャッフルして選択
+  // 初回マウント時に問題をシャッフルしてセット
   useEffect(() => {
     setSelectedQuestions(shuffleAndPick(questions, 5));
   }, []);
 
-  // 問題がまだ準備できていない場合のローディング表示
+  // 問題ロード中表示
   if (selectedQuestions.length === 0) {
     return <div className={styles.loading}>読み込み中...</div>;
   }
@@ -48,7 +53,7 @@ export default function QuizPage() {
     setAnswered(true);
   };
 
-  // 次の問題へ進む
+  // 次の問題へ進む処理
   const handleNext = () => {
     if (currentQuestionIndex + 1 < selectedQuestions.length) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -58,7 +63,7 @@ export default function QuizPage() {
     }
   };
 
-  // クイズをリトライする
+  // クイズをリトライする処理
   const handleRetry = () => {
     setSelectedQuestions(shuffleAndPick(questions, 5));
     setCurrentQuestionIndex(0);
@@ -67,15 +72,16 @@ export default function QuizPage() {
     resetQuestionState();
   };
 
-  // 1問ごとの状態リセット
+  // 1問ごとの状態リセット処理
   const resetQuestionState = () => {
     setAnswerResult(null);
     setAnswered(false);
     setUserPrompt("");
     setAiResponse("");
+    setLoadingAi(false);
   };
 
-  // ユーザーのプロンプトを送信してAI回答を取得
+  // 追加質問をAIに送信して回答をもらう
   const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) return;
     setLoadingAi(true);
@@ -99,7 +105,7 @@ ${correctAnswer}
 
 【ユーザーの質問】
 ${userPrompt}
-`;
+      `;
 
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -121,58 +127,28 @@ ${userPrompt}
     <div className={styles.quizContainer}>
       {!showResult ? (
         <>
-          {/* 問題番号 */}
+          {/* 問題番号表示 */}
           <h1 className={styles.questionNumber}>
             第{currentQuestionIndex + 1}問
           </h1>
 
-          {/* 問題コンポーネント */}
+          {/* クイズ問題コンポーネント */}
           <Question
             questionData={currentQuestion}
             onAnswer={handleAnswer}
             answered={answered}
           />
 
-          {/* 正誤結果・追加質問セクション */}
+          {/* 解答後、結果＆追加質問コンポーネントを表示 */}
           {answerResult && (
-            <>
-              <div className={styles.answerResult}>
-                {answerResult.split("\n").map((line, idx) => (
-                  <p key={idx}>{line}</p>
-                ))}
-              </div>
-
-              {/* ユーザー質問フォーム */}
-              <div className={styles.promptContainer}>
-                <h3>追加で質問してみよう！</h3>
-                <input
-                  type="text"
-                  value={userPrompt}
-                  onChange={(e) => setUserPrompt(e.target.value)}
-                  placeholder="例: このコマンドの応用例を教えて"
-                  className={styles.promptInput}
-                />
-                <button
-                  onClick={handlePromptSubmit}
-                  className={styles.button}
-                  disabled={loadingAi}
-                >
-                  質問を送信
-                </button>
-              </div>
-
-              {/* AIからの回答表示 */}
-              {loadingAi ? (
-                <p>回答を取得中...</p>
-              ) : (
-                aiResponse && (
-                  <div className={styles.aiResponse}>
-                    <h4>AIからの回答：</h4>
-                    <p>{aiResponse}</p>
-                  </div>
-                )
-              )}
-            </>
+            <AnswerResult
+              answerResult={answerResult}
+              userPrompt={userPrompt}
+              setUserPrompt={setUserPrompt}
+              handlePromptSubmit={handlePromptSubmit}
+              aiResponse={aiResponse}
+              loadingAi={loadingAi}
+            />
           )}
 
           {/* 次の問題へ進むボタン */}
@@ -185,21 +161,12 @@ ${userPrompt}
           )}
         </>
       ) : (
-        // 結果画面
-        <div className={styles.resultContainer}>
-          <h1>クイズ終了！</h1>
-          <h2 className={styles.scoreText}>
-            あなたのスコアは {score} / {selectedQuestions.length} です。
-          </h2>
-          <div className={styles.buttonContainer}>
-            <button onClick={handleRetry} className={styles.button}>
-              もう一度挑戦する
-            </button>
-            <Link href="/">
-              <button className={styles.button}>ホームに戻る</button>
-            </Link>
-          </div>
-        </div>
+        // クイズ結果画面
+        <QuizResult
+          score={score}
+          totalQuestions={selectedQuestions.length}
+          onRetry={handleRetry}
+        />
       )}
     </div>
   );

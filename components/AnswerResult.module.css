@@ -1,0 +1,43 @@
+/* 正誤メッセージのスタイル */
+.answerResult {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ユーザー追加質問フォームの全体ラッパー */
+.promptContainer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* ユーザー入力欄（テキストボックス） */
+.promptInput {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* 質問送信ボタン */
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* AIからの回答表示 */
+.aiResponse {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
