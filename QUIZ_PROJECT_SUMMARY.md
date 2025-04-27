@@ -5,6 +5,8 @@
 IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。  
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
+データとロジックを分離し、問題データは JSON ファイル(`/public/data/questions.json`)から動的に読み込む形式に移行しました。
+
 ## ✨ 現在できている機能
 
 - ホーム画面に「クイズ開始ボタン」を設置
@@ -18,6 +20,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - 回答後、「追加質問（AI 回答）」フォームを表示し、ユーザーの自由質問に Gemini API が回答
 - 回答中ローディング表示（「回答を取得中...」）
 - クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
+- 問題データを `/public/data/questions.json` から動的に fetch して読み込み
 
 ## 🗂️ ディレクトリ構成
 
@@ -40,8 +43,9 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
   ├── QuizResult.jsx（クイズ終了後画面コンポーネント）
   └── QuizResult.module.css（QuizResult用CSS）
 
-/data
-  └── questions.js（クイズ問題データ）
+/public
+  └── /data
+       └── questions.json（クイズ問題データ）
 ```
 
 ## 🛠️ 使用技術

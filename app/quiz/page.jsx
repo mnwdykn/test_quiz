@@ -5,7 +5,6 @@ import Link from "next/link";
 import Question from "../../components/Question";
 import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
-import questions from "../../data/questions";
 import styles from "./QuizPage.module.css";
 
 // 配列をシャッフルして指定数だけ取得する関数
@@ -14,6 +13,7 @@ const shuffleAndPick = (array, count) => {
 };
 
 export default function QuizPage() {
+  const [questionsData, setQuestionsData] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -25,8 +25,15 @@ export default function QuizPage() {
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
+  // JSONファイルから問題データをロード
   useEffect(() => {
-    setSelectedQuestions(shuffleAndPick(questions, 5));
+    async function loadQuestions() {
+      const res = await fetch("/data/questions.json");
+      const data = await res.json();
+      setQuestionsData(data);
+      setSelectedQuestions(shuffleAndPick(data, 5));
+    }
+    loadQuestions();
   }, []);
 
   if (selectedQuestions.length === 0) {
@@ -37,14 +44,12 @@ export default function QuizPage() {
 
   const handleAnswer = (index) => {
     const correctAnswer = currentQuestion.options[currentQuestion.answerIndex];
-
     if (index === currentQuestion.answerIndex) {
       setScore((prev) => prev + 1);
       setAnswerResult(`正解！\n正解は「${correctAnswer}」です。`);
     } else {
       setAnswerResult(`不正解！\n正解は「${correctAnswer}」です。`);
     }
-
     setAnswered(true);
   };
 
@@ -58,7 +63,7 @@ export default function QuizPage() {
   };
 
   const handleRetry = () => {
-    setSelectedQuestions(shuffleAndPick(questions, 5));
+    setSelectedQuestions(shuffleAndPick(questionsData, 5));
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);
