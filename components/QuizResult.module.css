@@ -1,0 +1,24 @@
+/* 結果画面のラッパー */
+.resultContainer {
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* スコア表示 */
+.scoreText {
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+/* ボタン類をまとめるコンテナ */
+.buttonContainer {
+  margin-top: 30px;
+}
+
+/* リトライ・ホームに戻るボタン */
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+}
