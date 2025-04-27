@@ -22,7 +22,9 @@ export async function POST(req) {
     console.log("[リクエスト受信] prompt:", prompt);
 
     // モデルの取得（必要に応じてモデル名を変更可能）
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash-latest",
+    });
 
     // コンテンツ生成
     const result = await model.generateContent(prompt);
