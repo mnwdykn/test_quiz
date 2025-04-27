@@ -29,15 +29,68 @@
   cursor: pointer;
 }
 
-/* AIからの回答表示 */
+/* AIからの回答表示全体 */
 .aiResponse {
-  margin-top: 20px;
-  padding: 15px;
+  margin-top: 30px;
+  padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: #f9f9f9;
   text-align: left;
-  max-width: 600px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  font-size: 16px;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+/* Markdown内 見出し */
+.aiResponse h1,
+.aiResponse h2,
+.aiResponse h3 {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Markdown内 箇条書きリスト */
+.aiResponse ul {
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Markdown内 リスト項目 */
+.aiResponse li {
+  margin-bottom: 8px;
+}
+
+/* Markdown内 コード（インライン） */
+.aiResponse code {
+  background-color: #eee;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 15px;
+}
+
+/* Markdown内 コードブロック */
+.aiResponse pre {
+  background-color: #f4f4f4;
+  padding: 15px;
+  overflow-x: auto;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 15px;
+}
+
+/* Markdown内 コードブロック内のテキスト */
+.aiResponse pre code {
+  background: none;
+  padding: 0;
+  font-size: 15px;
 }

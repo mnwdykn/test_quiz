@@ -1,6 +1,9 @@
 "use client";
 
-import styles from "./AnswerResult.module.css"; // 専用CSS
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm"; // ← GFMプラグインを使う！
+import styles from "./AnswerResult.module.css";
 
 export default function AnswerResult({
   answerResult,
@@ -12,14 +15,12 @@ export default function AnswerResult({
 }) {
   return (
     <>
-      {/* 正解・不正解メッセージ表示 */}
       <div className={styles.answerResult}>
         {answerResult.split("\n").map((line, idx) => (
           <p key={idx}>{line}</p>
         ))}
       </div>
 
-      {/* 追加質問フォーム */}
       <div className={styles.promptContainer}>
         <h3>追加で質問してみよう！</h3>
         <input
@@ -38,14 +39,15 @@ export default function AnswerResult({
         </button>
       </div>
 
-      {/* AIからの回答表示 */}
       {loadingAi ? (
         <p>回答を取得中...</p>
       ) : (
         aiResponse && (
           <div className={styles.aiResponse}>
             <h4>AIからの回答：</h4>
-            <p>{aiResponse}</p>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {aiResponse}
+            </ReactMarkdown>
           </div>
         )
       )}
