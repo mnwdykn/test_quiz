@@ -19,9 +19,6 @@ export default function QuizResult({ score, totalQuestions, onRetry }) {
         <button onClick={onRetry} className={styles.button}>
           もう一度挑戦する
         </button>
-        <Link href="/">
-          <button className={styles.button}>ホームに戻る</button>
-        </Link>
       </div>
     </div>
   );
