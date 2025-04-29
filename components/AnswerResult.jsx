@@ -2,7 +2,7 @@
 
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm"; // ← GFMプラグインを使う！
+import remarkGfm from "remark-gfm";
 import styles from "./AnswerResult.module.css";
 
 export default function AnswerResult({
@@ -12,6 +12,7 @@ export default function AnswerResult({
   handlePromptSubmit,
   aiResponse,
   loadingAi,
+  session, // ★追加
 }) {
   return (
     <>
@@ -30,13 +31,20 @@ export default function AnswerResult({
           placeholder="例: このコマンドの応用例を教えて"
           className={styles.promptInput}
         />
-        <button
-          onClick={handlePromptSubmit}
-          className={styles.button}
-          disabled={loadingAi}
-        >
-          質問を送信
-        </button>
+
+        <div className={styles.promptButtonArea}>
+          <button
+            onClick={handlePromptSubmit}
+            className={styles.button}
+            disabled={loadingAi || !session}
+          >
+            質問を送信
+          </button>
+
+          {!session && (
+            <p className={styles.loginWarning}>※ログインすると質問できます</p>
+          )}
+        </div>
       </div>
 
       {loadingAi ? (
