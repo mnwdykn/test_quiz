@@ -5,8 +5,8 @@
 IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。  
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
-データとロジックを分離し、問題データは JSON ファイル(`/public/data/questions.json`)から動的に読み込む形式に移行しました。  
-また、**Google アカウントによるログイン機能**を実装しました。
+データとロジックを分離し、問題データは JSON ファイル（`/public/data/questions.json`）から動的に読み込む形式に移行しました。  
+また、**Google アカウントによるログイン機能**を実装し、ログイン状態に応じた機能制御も行なっています。
 
 ## ✨ 現在できている機能
 
@@ -23,14 +23,16 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
 - 問題データを `/public/data/questions.json` から動的に fetch して読み込み
 - **Google アカウントによるログイン/ログアウト機能を追加**
-- **ログイン状態に応じてホーム画面に「ようこそ、〇〇さん！」を表示**
+- **ログイン状態（ユーザー名）を全ページ共通で表示（ClientLayout + LoginButton）**
+- **App Router 構成に準拠したクライアント／サーバー分離構成を実現**
 
 ## 🗂️ ディレクトリ構成
 
 ```
 /app
-  ├── layout.js（全体レイアウトとSessionProvider設置）
-  ├── page.jsx（ホーム画面 + ログインボタン）
+  ├── layout.js（全体レイアウト：サーバーコンポーネント）
+  ├── ClientLayout.jsx（SessionProvider＋LoginButtonラッパー：クライアント専用）
+  ├── page.js（ホーム画面）
   ├── /api
   │     ├── /generate
   │     │     └── route.js（Gemini API連携エンドポイント）
@@ -39,16 +41,17 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
   │                 └── route.js（NextAuth用ログインAPIエンドポイント）
   └── /quiz
         ├── QuizPage.module.css（クイズ画面用CSS）
-        └── page.jsx（クイズ画面）
+        └── page.jsx（クイズ画面本体 ※クライアントコンポーネント）
 
 /components
-  ├── Question.jsx（問題文と選択肢表示コンポーネント）
-  ├── Question.module.css（Questionコンポーネント用CSS）
-  ├── AnswerResult.jsx（正誤結果・追加質問表示コンポーネント）
-  ├── AnswerResult.module.css（AnswerResult用CSS）
-  ├── QuizResult.jsx（クイズ終了後画面コンポーネント）
-  ├── QuizResult.module.css（QuizResult用CSS）
-  └── LoginButton.jsx（Googleログイン/ログアウトボタンコンポーネント）
+  ├── Question.jsx（問題文と選択肢表示コンポーネント）※"use client"
+  ├── Question.module.css
+  ├── AnswerResult.jsx（正誤結果・AI回答フォーム）※"use client"
+  ├── AnswerResult.module.css
+  ├── QuizResult.jsx（クイズ終了画面）※"use client"
+  ├── QuizResult.module.css
+  ├── LoginButton.jsx（Googleログイン＋ユーザー名表示）※"use client"
+  └── LoginButton.module.css（ログイン状態表示の専用CSS）
 
 /public
   └── /data
@@ -57,13 +60,14 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 
 ## 🛠️ 使用技術
 
-- Next.js 14（App Router 構成）
-- React 18
-- JavaScript
-- Google Generative AI（Gemini 1.5 Pro API）
-- NextAuth.js（Google OAuth ログイン機能）
+- **Next.js 14**（App Router 構成）
+- **React 18**
+- **JavaScript**
+- **Google Generative AI**（Gemini 1.5 Pro API）
+- **NextAuth.js**（Google OAuth）
+- **CSS Modules**
 
-※将来的に TypeScript 化を検討中
+※将来的に TypeScript や Tailwind CSS への移行を検討中
 
 ## 🌿 ブランチ運用ルール
 
@@ -78,7 +82,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - スタイリングのさらなる強化（デザインブラッシュアップ）
 - テストコード（Jest + React Testing Library）追加
 - ユーザーの AI 質問履歴保存・表示機能追加（検討中）
-- **未ログイン時はクイズ開始禁止**（実装予定）
+- **未ログイン時はクイズ開始禁止**（未実装）
 
 ## 📎 注意事項
 
