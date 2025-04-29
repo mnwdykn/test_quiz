@@ -1,20 +1,21 @@
-// /app/quiz/page.jsx
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react"; // ★追加
 import Link from "next/link";
 import Question from "../../components/Question";
 import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
-import { generatePrompt } from "../../utils/generatePrompt"; // ★追加
+import { generatePrompt } from "../../utils/generatePrompt";
 import styles from "./QuizPage.module.css";
 
-// 配列をシャッフルしてcount個だけ取得する関数
 const shuffleAndPick = (array, count) => {
   return [...array].sort(() => Math.random() - 0.5).slice(0, count);
 };
 
 export default function QuizPage() {
+  const { data: session } = useSession(); // ★追加
+
   const [questionsData, setQuestionsData] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -27,7 +28,6 @@ export default function QuizPage() {
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // JSONから問題データをロード
   useEffect(() => {
     async function loadQuestions() {
       const res = await fetch("/data/questions.json");
@@ -44,7 +44,6 @@ export default function QuizPage() {
 
   const currentQuestion = selectedQuestions[currentQuestionIndex];
 
-  // 回答を処理
   const handleAnswer = (index) => {
     const correctAnswer = currentQuestion.options[currentQuestion.answerIndex];
     if (index === currentQuestion.answerIndex) {
@@ -56,7 +55,6 @@ export default function QuizPage() {
     setAnswered(true);
   };
 
-  // 次の問題へ
   const handleNext = () => {
     if (currentQuestionIndex + 1 < selectedQuestions.length) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -66,7 +64,6 @@ export default function QuizPage() {
     }
   };
 
-  // もう一度挑戦
   const handleRetry = () => {
     setSelectedQuestions(shuffleAndPick(questionsData, 5));
     setCurrentQuestionIndex(0);
@@ -75,7 +72,6 @@ export default function QuizPage() {
     resetQuestionState();
   };
 
-  // 質問・回答状態をリセット
   const resetQuestionState = () => {
     setAnswerResult(null);
     setAnswered(false);
@@ -84,7 +80,6 @@ export default function QuizPage() {
     setLoadingAi(false);
   };
 
-  // AI追加質問を送信
   const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) return;
     setLoadingAi(true);
@@ -96,12 +91,13 @@ export default function QuizPage() {
         currentQuestion,
         correctAnswer,
         userPrompt
-      ); // ★ここ！
+      );
 
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: combinedPrompt }),
+        credentials: "include", // ★Cookie送信忘れず！
       });
 
       const data = await response.json();
@@ -116,7 +112,6 @@ export default function QuizPage() {
 
   return (
     <div className={styles.quizContainer}>
-      {/* いつでも表示するホームボタン */}
       <div className={styles.buttonContainer}>
         <Link href="/">
           <button className={styles.button}>ホームに戻る</button>
@@ -143,6 +138,7 @@ export default function QuizPage() {
               handlePromptSubmit={handlePromptSubmit}
               aiResponse={aiResponse}
               loadingAi={loadingAi}
+              session={session} // ★追加
             />
           )}
 
