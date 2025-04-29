@@ -6,7 +6,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
 データとロジックを分離し、問題データは JSON ファイル(`/public/data/questions.json`)から動的に読み込む形式に移行しました。  
-さらに、AI 追加質問用のプロンプト生成処理を `utils/generatePrompt.js` に切り出して、保守性を向上させました。
+また、**Google アカウントによるログイン機能**を実装しました。
 
 ## ✨ 現在できている機能
 
@@ -22,17 +22,21 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - 回答中ローディング表示（「回答を取得中...」）
 - クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
 - 問題データを `/public/data/questions.json` から動的に fetch して読み込み
-- AI へのプロンプト生成を `utils/generatePrompt.js` に関数化して分離
+- **Google アカウントによるログイン/ログアウト機能を追加**
+- **ログイン状態に応じてホーム画面に「ようこそ、〇〇さん！」を表示**
 
 ## 🗂️ ディレクトリ構成
 
 ```
 /app
-  ├── HomePage.module.css（ホーム画面用CSS）
-  ├── page.jsx（ホーム画面）
+  ├── layout.js（全体レイアウトとSessionProvider設置）
+  ├── page.jsx（ホーム画面 + ログインボタン）
   ├── /api
-  │     └── /generate
-  │         └── route.js（Gemini API連携エンドポイント）
+  │     ├── /generate
+  │     │     └── route.js（Gemini API連携エンドポイント）
+  │     └── /auth
+  │           └── [...nextauth]
+  │                 └── route.js（NextAuth用ログインAPIエンドポイント）
   └── /quiz
         ├── QuizPage.module.css（クイズ画面用CSS）
         └── page.jsx（クイズ画面）
@@ -43,14 +47,12 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
   ├── AnswerResult.jsx（正誤結果・追加質問表示コンポーネント）
   ├── AnswerResult.module.css（AnswerResult用CSS）
   ├── QuizResult.jsx（クイズ終了後画面コンポーネント）
-  └── QuizResult.module.css（QuizResult用CSS）
+  ├── QuizResult.module.css（QuizResult用CSS）
+  └── LoginButton.jsx（Googleログイン/ログアウトボタンコンポーネント）
 
 /public
   └── /data
        └── questions.json（クイズ問題データ）
-
-/utils
-  └── generatePrompt.js（AI用プロンプト生成ユーティリティ）
 ```
 
 ## 🛠️ 使用技術
@@ -59,8 +61,9 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - React 18
 - JavaScript
 - Google Generative AI（Gemini 1.5 Pro API）
+- NextAuth.js（Google OAuth ログイン機能）
 
-※将来的に TypeScript 化を検討
+※将来的に TypeScript 化を検討中
 
 ## 🌿 ブランチ運用ルール
 
@@ -75,6 +78,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - スタイリングのさらなる強化（デザインブラッシュアップ）
 - テストコード（Jest + React Testing Library）追加
 - ユーザーの AI 質問履歴保存・表示機能追加（検討中）
+- **未ログイン時はクイズ開始禁止**（実装予定）
 
 ## 📎 注意事項
 
