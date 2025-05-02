@@ -1,84 +1,39 @@
+// /app/quiz/page.jsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react"; // ★追加
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Question from "../../components/Question";
 import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
 import { generatePrompt } from "../../utils/generatePrompt";
+import { useQuizGame } from "../../hooks/useQuizGame";
 import styles from "./QuizPage.module.css";
 
-const shuffleAndPick = (array, count) => {
-  return [...array].sort(() => Math.random() - 0.5).slice(0, count);
-};
-
 export default function QuizPage() {
-  const { data: session } = useSession(); // ★追加
+  const { data: session } = useSession();
 
-  const [questionsData, setQuestionsData] = useState([]);
-  const [selectedQuestions, setSelectedQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [answerResult, setAnswerResult] = useState(null);
-  const [answered, setAnswered] = useState(false);
+  const {
+    currentQuestion,
+    selectedQuestions,
+    currentQuestionIndex,
+    score,
+    showResult,
+    answerResult,
+    answered,
+    handleAnswer,
+    handleNext,
+    handleRetry,
+  } = useQuizGame(5);
 
   const [userPrompt, setUserPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
 
-  useEffect(() => {
-    async function loadQuestions() {
-      const res = await fetch("/data/questions.json");
-      const data = await res.json();
-      setQuestionsData(data);
-      setSelectedQuestions(shuffleAndPick(data, 5));
-    }
-    loadQuestions();
-  }, []);
-
-  if (selectedQuestions.length === 0) {
+  if (!currentQuestion) {
     return <div className={styles.loading}>読み込み中...</div>;
   }
-
-  const currentQuestion = selectedQuestions[currentQuestionIndex];
-
-  const handleAnswer = (index) => {
-    const correctAnswer = currentQuestion.options[currentQuestion.answerIndex];
-    if (index === currentQuestion.answerIndex) {
-      setScore((prev) => prev + 1);
-      setAnswerResult(`正解！\n正解は「${correctAnswer}」です。`);
-    } else {
-      setAnswerResult(`不正解！\n正解は「${correctAnswer}」です。`);
-    }
-    setAnswered(true);
-  };
-
-  const handleNext = () => {
-    if (currentQuestionIndex + 1 < selectedQuestions.length) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      resetQuestionState();
-    } else {
-      setShowResult(true);
-    }
-  };
-
-  const handleRetry = () => {
-    setSelectedQuestions(shuffleAndPick(questionsData, 5));
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setShowResult(false);
-    resetQuestionState();
-  };
-
-  const resetQuestionState = () => {
-    setAnswerResult(null);
-    setAnswered(false);
-    setUserPrompt("");
-    setAiResponse("");
-    setLoadingAi(false);
-  };
 
   const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) return;
@@ -97,7 +52,7 @@ export default function QuizPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: combinedPrompt }),
-        credentials: "include", // ★Cookie送信忘れず！
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -138,7 +93,7 @@ export default function QuizPage() {
               handlePromptSubmit={handlePromptSubmit}
               aiResponse={aiResponse}
               loadingAi={loadingAi}
-              session={session} // ★追加
+              session={session}
             />
           )}
 

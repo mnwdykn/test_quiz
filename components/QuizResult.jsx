@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import styles from "./QuizResult.module.css"; // 専用CSS
 
 export default function QuizResult({ score, totalQuestions, onRetry }) {
