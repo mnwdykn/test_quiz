@@ -1,14 +1,12 @@
-// /app/quiz/page.jsx
 "use client";
 
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Question from "../../components/Question";
 import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
-import { generatePrompt } from "../../utils/generatePrompt";
 import { useQuizGame } from "../../hooks/useQuizGame";
+import { useGemini } from "../../hooks/useGemini";
 import styles from "./QuizPage.module.css";
 
 export default function QuizPage() {
@@ -27,43 +25,12 @@ export default function QuizPage() {
     handleRetry,
   } = useQuizGame(5);
 
-  const [userPrompt, setUserPrompt] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
-  const [loadingAi, setLoadingAi] = useState(false);
+  const { userPrompt, setUserPrompt, aiResponse, loadingAi, submitPrompt } =
+    useGemini(currentQuestion);
 
   if (!currentQuestion) {
     return <div className={styles.loading}>読み込み中...</div>;
   }
-
-  const handlePromptSubmit = async () => {
-    if (!userPrompt.trim()) return;
-    setLoadingAi(true);
-
-    try {
-      const correctAnswer =
-        currentQuestion.options[currentQuestion.answerIndex];
-      const combinedPrompt = generatePrompt(
-        currentQuestion,
-        correctAnswer,
-        userPrompt
-      );
-
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: combinedPrompt }),
-        credentials: "include",
-      });
-
-      const data = await response.json();
-      setAiResponse(data.answer);
-    } catch (error) {
-      console.error("[クライアントエラー]", error);
-      setAiResponse("エラーが発生しました。もう一度お試しください。");
-    } finally {
-      setLoadingAi(false);
-    }
-  };
 
   return (
     <div className={styles.quizContainer}>
@@ -90,7 +57,7 @@ export default function QuizPage() {
               answerResult={answerResult}
               userPrompt={userPrompt}
               setUserPrompt={setUserPrompt}
-              handlePromptSubmit={handlePromptSubmit}
+              handlePromptSubmit={submitPrompt}
               aiResponse={aiResponse}
               loadingAi={loadingAi}
               session={session}
