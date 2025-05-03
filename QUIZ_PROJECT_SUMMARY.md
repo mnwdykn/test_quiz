@@ -26,6 +26,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - **ログイン状態（ユーザー名）を全ページ共通で表示（ClientLayout + LoginButton）**
 - **App Router 構成に準拠したクライアント／サーバー分離構成を実現**
 - **ゲーム進行ロジックをカスタムフック `useQuizGame` として分離・再利用可能に整理**
+- **Gemini 質問処理をカスタムフック `useGemini` に分離し、状態と処理を一元管理**
 
 ## 🗂️ ディレクトリ構成
 
@@ -55,7 +56,8 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
   └── LoginButton.module.css（ログイン状態表示の専用CSS）
 
 /hooks
-  └── useQuizGame.js（ゲーム進行ロジックを担当するカスタムフック）
+  ├── useQuizGame.js（クイズ進行ロジックを担当するカスタムフック）
+  └── useGemini.js（Gemini質問処理を担当するカスタムフック）
 
 /utils
   └── generatePrompt.js（Gemini用プロンプト生成処理）
