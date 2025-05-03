@@ -1,43 +1,56 @@
-/* クイズページ全体の中央寄せ＆マージン設定 */
 .quizContainer {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 0 20px;
   text-align: center;
-  margin-top: 50px;
+  font-family: "Helvetica Neue", sans-serif;
 }
 
-/* 問題番号表示（例: 第1問） */
 .questionNumber {
   font-size: 28px;
   margin-bottom: 20px;
+  color: #222;
 }
 
-/* 正解・不正解メッセージ */
 .answerResult {
   margin-top: 20px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
+  color: #2e7d32; /* 正解時緑系を想定（JSで条件変更可能） */
 }
 
-/* 「次の問題へ」ボタンや「もう一度挑戦する」ボタン */
 .buttonContainer {
   margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-/* ボタンの基本スタイル */
 .button {
-  padding: 10px 20px;
+  padding: 10px 24px;
   font-size: 16px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  margin: 10px;
+  transition: background-color 0.3s ease;
 }
 
-/* クイズ終了後のスコア表示 */
+.button:hover {
+  background-color: #005bb5;
+}
+
 .scoreText {
   font-size: 24px;
   margin-top: 20px;
+  font-weight: 500;
+  color: #333;
 }
 
-/* ローディング中テキスト */
 .loading {
   font-size: 20px;
-  margin-top: 100px;
+  margin-top: 150px;
+  color: #666;
 }

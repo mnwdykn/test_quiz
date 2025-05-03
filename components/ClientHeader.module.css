@@ -14,6 +14,15 @@
   color: #333;
 }
 
+.titleLink {
+  text-decoration: none;
+}
+
+.titleLink:hover .title {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 .userInfo {
   display: flex;
   align-items: center;

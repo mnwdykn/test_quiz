@@ -1,11 +1,14 @@
 "use client";
 import LoginButton from "./LoginButton";
 import styles from "./ClientHeader.module.css";
+import Link from "next/link";
 
 export default function ClientHeader() {
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>ITクイズアプリ</h1>
+      <Link href="/" className={styles.titleLink}>
+        <h1 className={styles.title}>ITクイズアプリ</h1>
+      </Link>
       <div className={styles.userInfo}>
         <LoginButton
           render={({ status, session, signIn, signOut }) => {
