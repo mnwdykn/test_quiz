@@ -26,14 +26,13 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
 - **ログイン状態（ユーザー名）を全ページ共通で表示（ClientLayout + LoginButton）**
 - **App Router 構成に準拠したクライアント／サーバー分離構成を実現**
 - **ゲーム進行ロジックをカスタムフック `useQuizGame` として分離・再利用可能に整理**
-- **Gemini 質問処理をカスタムフック `useGemini` に分離し、状態と処理を一元管理**
 
 ## 🗂️ ディレクトリ構成
 
 ```
 /app
   ├── layout.js（全体レイアウト：サーバーコンポーネント）
-  ├── ClientLayout.jsx（SessionProvider＋LoginButtonラッパー：クライアント専用）
+  ├── ClientLayout.jsx（SessionProvider専用ラッパー：use client 指定）
   ├── page.js（ホーム画面）
   ├── /api
   │     ├── /generate
@@ -46,6 +45,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
         └── page.jsx（クイズ画面本体 ※クライアントコンポーネント）
 
 /components
+  ├── ClientHeader.jsx（ヘッダー：アプリ名＋LoginButton表示）※"use client"
   ├── Question.jsx（問題文と選択肢表示コンポーネント）※"use client"
   ├── Question.module.css
   ├── AnswerResult.jsx（正誤結果・AI回答フォーム）※"use client"
@@ -56,8 +56,7 @@ IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発し�
   └── LoginButton.module.css（ログイン状態表示の専用CSS）
 
 /hooks
-  ├── useQuizGame.js（クイズ進行ロジックを担当するカスタムフック）
-  └── useGemini.js（Gemini質問処理を担当するカスタムフック）
+  └── useQuizGame.js（ゲーム進行ロジックを担当するカスタムフック）
 
 /utils
   └── generatePrompt.js（Gemini用プロンプト生成処理）

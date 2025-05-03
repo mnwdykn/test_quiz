@@ -27,7 +27,6 @@ export async function POST(req) {
 
   try {
     const { prompt } = await req.json();
-    console.log("[リクエスト受信] prompt:", prompt);
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash-latest",
@@ -35,7 +34,6 @@ export async function POST(req) {
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
-    console.log("[Gemini応答] text:", text);
 
     return NextResponse.json({ answer: text });
   } catch (error) {
