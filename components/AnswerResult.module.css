@@ -1,98 +1,45 @@
-/* 正誤メッセージのスタイル */
 .answerResult {
   margin-top: 20px;
   font-size: 24px;
   font-weight: bold;
   text-align: center;
+  color: #2e7d32; /* 正解：緑系、JS側で不正解時は赤に変更可能 */
 }
 
-/* ユーザー追加質問フォームの全体ラッパー */
 .promptContainer {
-  margin-top: 30px;
-  text-align: center;
-}
-
-/* ユーザー入力欄（テキストボックス） */
-.promptInput {
-  width: 80%;
-  max-width: 400px;
-  padding: 10px;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-/* 質問送信ボタン */
-.button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-/* AIからの回答表示全体 */
-.aiResponse {
-  margin-top: 30px;
+  margin-top: 40px;
   padding: 20px;
-  border: 1px solid #ccc;
+  background-color: #f8f8f8;
   border-radius: 12px;
-  background-color: #f9f9f9;
-  text-align: left;
-  max-width: 800px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.promptInput {
+  width: 100%;
+  max-width: 480px;
+  padding: 10px;
   font-size: 16px;
-  line-height: 1.7;
-  word-break: break-word;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-/* Markdown内 見出し */
-.aiResponse h1,
-.aiResponse h2,
-.aiResponse h3 {
-  font-weight: bold;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  line-height: 1.4;
+.button {
+  padding: 10px 24px;
+  font-size: 16px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Markdown内 箇条書きリスト */
-.aiResponse ul {
-  padding-left: 20px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-/* Markdown内 リスト項目 */
-.aiResponse li {
-  margin-bottom: 8px;
-}
-
-/* Markdown内 コード（インライン） */
-.aiResponse code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 15px;
-}
-
-/* Markdown内 コードブロック */
-.aiResponse pre {
-  background-color: #f4f4f4;
-  padding: 15px;
-  overflow-x: auto;
-  border-radius: 8px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 15px;
-}
-
-/* Markdown内 コードブロック内のテキスト */
-.aiResponse pre code {
-  background: none;
-  padding: 0;
-  font-size: 15px;
+.button:hover {
+  background-color: #005bb5;
 }
 
 .promptButtonArea {
@@ -104,6 +51,50 @@
 }
 
 .loginWarning {
-  color: red;
+  color: #c62828;
+  background-color: #ffebee;
+  padding: 6px 12px;
+  border-radius: 6px;
   font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.aiResponse {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.7;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* コードブロック対応 */
+.aiResponse pre {
+  background-color: #f4f4f4;
+  padding: 15px;
+  overflow-x: auto;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 15px;
+  white-space: pre-wrap; /* 追記：必要に応じて */
+}
+
+.button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover {
+  background-color: #ccc; /* ホバーしても変化なし */
 }

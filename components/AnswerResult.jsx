@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import styles from "./AnswerResult.module.css";
 
-const ENABLE_GEMINI = true; // falseにすればGemini機能を非表示にできる
+const ENABLE_GEMINI = true; // Gemini機能のON/OFF切替
 
 export default function AnswerResult({
   answerResult,
@@ -20,12 +20,33 @@ export default function AnswerResult({
 
   return (
     <>
+      {/* 正誤メッセージ（色分け） */}
       <div className={styles.answerResult}>
-        {answerResult.split("\n").map((line, idx) => (
-          <p key={idx}>{line}</p>
-        ))}
+        {answerResult.split("\n").map((line, idx) => {
+          if (idx === 0) {
+            const isCorrect = line.trim() === "正解！"; // ✅ 完全一致で判定
+            return (
+              <p
+                key={idx}
+                style={{
+                  color: isCorrect ? "#d32f2f" : "#1976d2",
+                  fontWeight: "bold",
+                }}
+              >
+                {line}
+              </p>
+            );
+          }
+
+          return (
+            <p key={idx} style={{ color: "#333", marginTop: "4px" }}>
+              {line}
+            </p>
+          );
+        })}
       </div>
 
+      {/* Gemini追加質問フォーム */}
       {ENABLE_GEMINI && (
         <div className={styles.promptContainer}>
           <h3>追加で質問してみよう！</h3>
@@ -53,6 +74,7 @@ export default function AnswerResult({
         </div>
       )}
 
+      {/* GeminiのAI回答表示 */}
       {ENABLE_GEMINI &&
         (loadingAi ? (
           <p>回答を取得中...</p>

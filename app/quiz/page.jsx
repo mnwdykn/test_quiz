@@ -1,12 +1,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import Question from "../../components/Question";
 import AnswerResult from "../../components/AnswerResult";
 import QuizResult from "../../components/QuizResult";
 import { useQuizGame } from "../../hooks/useQuizGame";
 import { useGemini } from "../../hooks/useGemini";
+import Link from "next/link";
 import styles from "./QuizPage.module.css";
 
 export default function QuizPage() {
@@ -34,12 +34,6 @@ export default function QuizPage() {
 
   return (
     <div className={styles.quizContainer}>
-      <div className={styles.buttonContainer}>
-        <Link href="/">
-          <button className={styles.button}>ホームに戻る</button>
-        </Link>
-      </div>
-
       {!showResult ? (
         <>
           <h1 className={styles.questionNumber}>
@@ -53,31 +47,38 @@ export default function QuizPage() {
           />
 
           {answerResult && (
-            <AnswerResult
-              answerResult={answerResult}
-              userPrompt={userPrompt}
-              setUserPrompt={setUserPrompt}
-              handlePromptSubmit={submitPrompt}
-              aiResponse={aiResponse}
-              loadingAi={loadingAi}
-              session={session}
-            />
-          )}
+            <>
+              <AnswerResult
+                answerResult={answerResult}
+                userPrompt={userPrompt}
+                setUserPrompt={setUserPrompt}
+                handlePromptSubmit={submitPrompt}
+                aiResponse={aiResponse}
+                loadingAi={loadingAi}
+                session={session}
+              />
 
-          {answered && (
-            <div className={styles.buttonContainer}>
-              <button onClick={handleNext} className={styles.button}>
-                次の問題へ
-              </button>
-            </div>
+              <div className={styles.buttonContainer}>
+                <button onClick={handleNext} className={styles.button}>
+                  次の問題へ
+                </button>
+              </div>
+            </>
           )}
         </>
       ) : (
-        <QuizResult
-          score={score}
-          totalQuestions={selectedQuestions.length}
-          onRetry={handleRetry}
-        />
+        <>
+          <QuizResult
+            score={score}
+            totalQuestions={selectedQuestions.length}
+            onRetry={handleRetry}
+          />
+          <div className={styles.buttonContainer}>
+            <Link href="/">
+              <button className={styles.button}>ホームに戻る</button>
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );

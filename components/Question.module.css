@@ -1,17 +1,44 @@
-/* 問題文の見出し */
+.questionContainer {
+  margin-top: 30px;
+  text-align: center;
+}
+
 .questionTitle {
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 20px;
+  color: #333;
 }
 
-/* 各選択肢ボタンの外側のマージン */
-.optionWrapper {
-  margin: 10px;
+/* 選択肢をレスポンシブグリッドで配置 */
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/* 選択肢ボタン自体のスタイル */
+@media (min-width: 600px) {
+  .options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .optionButton {
-  padding: 10px 20px;
+  padding: 12px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.optionButton:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.optionButton:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
