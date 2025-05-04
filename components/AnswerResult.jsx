@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import styles from "./AnswerResult.module.css";
 
-const ENABLE_GEMINI = true; // Gemini機能のON/OFF切替
+const ENABLE_GEMINI = false; // Gemini機能のON/OFF切替
 
 export default function AnswerResult({
   answerResult,

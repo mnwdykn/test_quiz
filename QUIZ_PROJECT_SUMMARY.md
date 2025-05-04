@@ -5,110 +5,95 @@
 IT 系の基礎知識を問う 4 択クイズアプリを Next.js で開発しています。  
 個人開発ですが、チーム開発を意識したフロー（ブランチ作成、PR 作成、main マージ）を取り入れています。
 
-データとロジックを分離し、問題データは JSON ファイル（`/public/data/questions.json`）から動的に読み込む形式に移行しました。  
-また、**Google アカウントによるログイン機能**を実装し、ログイン状態に応じた機能制御も行なっています。
+- 問題データは `/public/data/questions.json` から動的読み込み
+- Google アカウントによるログインを実装
+- Gemini API による追加質問機能を搭載
+- Supabase を使ったユーザー登録管理と管理者画面の実装済み
 
 ## ✨ 現在できている機能
 
-- ホーム画面に「クイズ開始ボタン」を設置
-- クイズ問題をランダム抽出（シャッフルして 5 問選択）して連続出題
-- 正解・不正解を判定し、正解内容も表示
-- 回答後に「次の問題へ」ボタンで次に進める
-- 全問終了後にスコア（正解数）を表示
-- クイズ終了後に「もう一度挑戦する」ボタンでリトライ可能
-- クイズ終了画面に「ホームに戻る」ボタンを設置
-- 読み込み中は「読み込み中...」メッセージを表示
-- 回答後、「追加質問（AI 回答）」フォームを表示し、ユーザーの自由質問に Gemini API が回答
-- 回答中ローディング表示（「回答を取得中...」）
-- クイズ画面の正誤結果、追加質問エリア、クイズ終了画面をそれぞれ独立コンポーネント化（AnswerResult / QuizResult）
-- 問題データを `/public/data/questions.json` から動的に fetch して読み込み
-- **Google アカウントによるログイン/ログアウト機能を追加**
-- **ログイン状態（ユーザー名）を全ページ共通で表示（ClientHeader）**
-- **App Router 構成に準拠したクライアント／サーバー分離構成を実現**
-- Gemini の AI 回答機能をクライアントフック（`useGemini.js`）で管理
-- Quiz 進行ロジックを独立フック（`useQuizGame.js`）として抽出・再利用化
-- **ログインしていない場合、Gemini API へのリクエストをサーバーでブロック**
-- **Gemini 機能を ON/OFF 可能に設計（環境設定で切替）**
+- ホーム画面に「クイズ開始」ボタンを設置
+- クイズをランダムに 5 問出題し、正解・不正解判定と表示
+- 回答後「次の問題へ」ボタンで進行、全問終了後にスコア表示
+- 「もう一度挑戦する」「ホームに戻る」ボタンも実装済み
+- AI への自由質問フォーム（Gemini API）＋ ローディング表示
+- AnswerResult / QuizResult などを独立コンポーネント化
+- クイズ画面のロジックは useQuizGame / useGemini フックに分離
+- Google ログイン状態は SessionProvider + ClientHeader で共通管理
+- Supabase にログインユーザーを保存（名前、メール、登録日時、最終ログイン）
 
-## 🗂️ ディレクトリ構成
+## 🗂️ ディレクトリ構成（主要ファイル）
 
-```
-/app
-  ├── layout.js（全体レイアウト：サーバーコンポーネント）
-  ├── ClientLayout.jsx（SessionProvider用ラッパー。ヘッダー・子要素を囲む）※"use client"
-  ├── page.js（ホーム画面）
-  ├── /api
-  │     ├── /generate
-  │     │     └── route.js（Gemini API連携エンドポイント）
-  │     └── /auth
-  │           └── [...nextauth]/route.js（NextAuthログインAPI）
-  └── /quiz
-        ├── page.jsx（クイズ画面本体）
-        └── QuizPage.module.css（クイズ画面用スタイル）
+/app  
+├── layout.js # 全体レイアウト（ヘッダー等含む）  
+├── page.js # ホーム画面  
+├── /quiz  
+│ ├── page.jsx # クイズ進行ページ（useQuizGame 使用）  
+│ └── QuizPage.module.css  
+├── /admin  
+│ ├── page.jsx # 管理者ユーザー一覧ページ（useSession + API）  
+│ └── AdminPage.module.css  
+├── /api  
+│ ├── /generate/route.js # Gemini API 呼び出し（ログイン制限あり）  
+│ ├── /admin-users/route.js # Supabase からユーザー一覧取得 API  
+│ └── /auth/[...nextauth]/route.js # NextAuth 認証処理
 
-/components
-  ├── LoginButton.jsx（ログイン状態の取得・制御専用。UIは親に委ねる）※"use client"
-  ├── ClientHeader.jsx（ヘッダーUI。アプリ名＋ログイン状態表示）※"use client"
-  ├── ClientHeader.module.css
-  ├── Question.jsx / Question.module.css
-  ├── AnswerResult.jsx / AnswerResult.module.css
-  ├── QuizResult.jsx / QuizResult.module.css
+/components  
+├── Question.jsx  
+├── AnswerResult.jsx  
+├── QuizResult.jsx  
+├── ClientHeader.jsx  
+└── 各種 .module.css
 
-/hooks
-  ├── useQuizGame.js（クイズの状態・進行管理用）
-  └── useGemini.js（AI質問の入力・応答状態管理）
+/hooks  
+├── useQuizGame.jsx # クイズロジック  
+└── useGemini.js # Gemini API 処理
 
-/utils
-  └── generatePrompt.js（Geminiへの送信プロンプト生成関数）
+/utils  
+└── generatePrompt.js # Gemini 用プロンプト組み立て
 
-/public/data
-  └── questions.json（クイズ問題データ）
-```
+/lib  
+└── supabaseAdmin.js # Supabase 管理用クライアント
+
+/public  
+└── /data/questions.json # クイズデータ
 
 ## 🛠️ 使用技術
 
-- **Next.js 14**（App Router 構成）
-- **React 18**
-- **JavaScript**
-- **Google Generative AI**（Gemini 1.5 Flash）
-- **NextAuth.js**（Google OAuth）
-- **CSS Modules**
-
-※将来的に TypeScript や Tailwind CSS への移行を検討中
+- Next.js 14（App Router 構成）
+- React 18 / JavaScript
+- CSS Modules
+- Google Generative AI (Gemini 1.5 Flash)
+- NextAuth.js（Google OAuth）
+- Supabase（ユーザー管理・RLS）
 
 ## 🌿 ブランチ運用ルール
 
-- 開発は必ず `feature/機能名` ブランチで作業する
-- 作業完了後は GitHub で Pull Request を作成して main へマージ
-- `main`ブランチは常に安定稼働する状態を保つ
+- `feature/機能名` ブランチで作業
+- GitHub 上で PR 作成 → `main` にマージ
+- `main` は常に安定稼働状態を維持
 
-## 🔮 今後の予定（ToDo）
+## 🔐 管理機能
 
-- スコアに応じたコメント表示機能の追加
-- 問題データを外部 API 連携に切り替え（将来的拡張）
-- スタイリングのさらなる強化（デザインブラッシュアップ）
-- テストコード（Jest + React Testing Library）追加
-- ユーザーの AI 質問履歴保存・表示機能追加（検討中）
-- **未ログイン時はクイズ開始禁止**（未実装）
+- 管理者メールアドレスを `page.jsx` に直接定義（今後 .env 化検討可）
+- Supabase にはログインユーザーの登録日時・最終ログイン日時を保存
+- `/admin` ページではユーザー情報を一覧表示（名前、メール、登録・最終ログイン日時）
 
-## 📎 注意事項
+## 🔮 今後の予定
 
-- 1 つの機能開発ごとに必ずブランチを分けること
-- コミットメッセージは作業内容が一目でわかる表現にすること
-- PR 作成時には変更内容の簡単な説明を添えること
+- スコアに応じたコメント表示
+- クイズ問題の外部 API 化（将来的拡張）
+- デザインブラッシュアップ（レスポンシブ対応含む）
+- 管理者権限を Supabase 側に移す（is_admin カラム検討）
+- ユーザーの AI 質問履歴保存（オプション）
 
-## ✅ 開発フローまとめ
+## ✅ 開発フロー
 
-```
-1. git checkout main
-2. git pull origin main
-3. git checkout -b feature/作業内容
-4. 作業・ファイル編集・保存
-5. git add .
-6. git commit -m "作業内容"
-7. git push -u origin feature/作業内容
-8. GitHubでPull Request作成
-9. レビューしてmainにマージ
-10. git checkout main
-11. git pull origin main
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/作業名
+# 作業 → git add . → git commit -m "..."
+git push -u origin feature/作業名
+# GitHubでPR作成 → mainにマージ
 ```
